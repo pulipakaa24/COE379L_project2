@@ -1,0 +1,7 @@
+version: '3.8' # or a newer version like '3.9'
+
+services:
+  inference_server:
+    image: adipu24/project02:latest # Replace with your image name and tag
+    ports:
+      - "5000:5000" # Maps host port 5000 to container port 5000
