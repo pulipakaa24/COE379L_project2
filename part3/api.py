@@ -43,7 +43,7 @@ def upload_file():
        data = np.asarray(pil_image)
 
    print(data.shape) 
-   data = data / np.max(data)
+   data = data / 255.0
    data = data.reshape(1,128,128,3)
    prediction = model.predict(data)[0][0]
    if prediction < 0.5:
