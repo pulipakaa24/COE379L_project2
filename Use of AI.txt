@@ -1,0 +1,76 @@
+
+[1]. Tool: Claude
+      Prompt: How can I efficiently import a large amount of JPEG images into python for use with tensorflow while normalizing and randomizing the dataset?
+      Output:
+            from tensorflow.keras.preprocessing import image_dataset_from_directory
+
+            # Load color JPEG images from directory structure:
+            # Data/
+            #   ├── damage/
+            #   └── no_damage/
+
+            dataset = image_dataset_from_directory(
+            'Data',
+            image_size=(224, 224),
+            batch_size=32,
+            label_mode='binary',
+            color_mode='rgb',  # Explicitly load as color (this is the default)
+            shuffle=True,
+            seed=42
+            )
+
+            # Normalize pixel values to [0, 1] range for better training
+            normalization_layer = tf.keras.layers.Rescaling(1./255)
+            dataset = dataset.map(lambda x, y: (normalization_layer(x), y))
+
+            # Optimize performance
+            dataset = dataset.prefetch(tf.data.AUTOTUNE)
+
+            print(f"Dataset created. Each batch shape: (batch_size, 224, 224, 3)")
+
+[2]. Tool: Google AI Mode
+      Prompt: How can I ensure my GPU memory is emptied between model training sessions?
+      Output: import tensorflow as tf
+            import gc
+
+            # Load and use your model
+            # ...
+
+            del model  # Delete the model object
+            tf.keras.backend.clear_session()  # Clear the Keras backend session
+            gc.collect()  # Force garbage collection
+
+[2]. Tool: Google AI Mode
+      Prompt: vgg16 with binary classification
+      Output: import tensorflow as tf
+            from tensorflow.keras.applications import VGG16
+            from tensorflow.keras.models import Sequential, Model
+            from tensorflow.keras.layers import Dense, Flatten, Dropout
+            from tensorflow.keras.optimizers import Adam
+            from tensorflow.keras.losses import binary_crossentropy
+
+            # 1. Load VGG16 without the top layer
+            IMG_SIZE = (224, 224) # VGG16 default input size
+            vgg_base = VGG16(weights='imagenet', include_top=False, input_shape=IMG_SIZE + (3,))
+
+            # 2. Freeze the convolutional base
+            vgg_base.trainable = False
+
+            # 3. Create a new model with custom top layers
+            model = Sequential()
+            model.add(vgg_base)
+            model.add(Flatten())
+            model.add(Dense(256, activation='relu'))
+            model.add(Dropout(0.5)) # Regularization to prevent overfitting
+            model.add(Dense(1, activation='sigmoid')) # Single neuron with sigmoid for binary classification
+
+            # 4. Compile the model
+            model.compile(
+            optimizer=Adam(learning_rate=0.0001), # Lower learning rate often better for transfer learning
+            loss=binary_crossentropy,
+            metrics=['accuracy']
+            )
+
+            # 5. Train the model (using ImageDataGenerator for data preparation)
+            # ... data loading and augmentation code here ...
+            # model.fit(...)
