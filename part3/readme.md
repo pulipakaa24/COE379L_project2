@@ -4,7 +4,7 @@
 Run ```docker-compose up```. Ensure ```docker-compose``` is installed by running ```sudo apt install docker-compose``` beforehand.
 
 ## Option 2: Build Docker Image
-run ```docker build -t {username}/{imagename} .``` in this directory. The required files are all included in this directory, so just ensure all files in the github repo are cloned properly.
+run ```docker build -t {username}/{imagename} .``` in this directory. I used ```adipu24/project02```. The required files are all included in this directory, so just ensure all files in the github repo are cloned properly.
 
 ## Example requests
 A ```GET``` request can be sent to the ```/summary``` endpoint to retrieve a model summary including the purpose of the model, the version, and the number of parameters it has.
